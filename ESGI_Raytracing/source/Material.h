@@ -12,7 +12,7 @@ struct Material
 
 	Color baseColor;
 	float shininess;
-	Color specularColor; 
+	Color specularColor;
 };
 
 #endif

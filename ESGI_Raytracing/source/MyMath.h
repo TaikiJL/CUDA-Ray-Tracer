@@ -1,11 +1,10 @@
 #ifndef MYMATH_H
 #define MYMATH_H
 
-#define M_PI 3.141592654f
-#define M_PI_2 1.570796327f
+#define M_PI 3.14159265358979323846f
+#define M_PI_2 1.57079632679489661923f
 
 #include <device_launch_parameters.h>
-#include <math_constants.h>
 
 __host__ __device__ static float Deg2Rad()
 {

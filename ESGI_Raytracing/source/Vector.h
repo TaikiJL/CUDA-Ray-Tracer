@@ -8,25 +8,25 @@
 struct Vector2
 {
 	// Constructors
-	__host__ __device__ Vector2() : x(0.f), y(0.f) {}
-	__host__ __device__ Vector2(float x, float y) : x(x), y(y) {}
+	Vector2() : x(0.f), y(0.f) {}
+	Vector2(float x, float y) : x(x), y(y) {}
 
 	// Right hand operators
-	__host__ __device__ Vector2 operator+(const Vector2 &v2) const { return Vector2(this->x + v2.x, this->y + v2.y); }
-	__host__ __device__ Vector2 operator-(const Vector2 &v2) const { return Vector2(this->x - v2.x, this->y - v2.y); }
-	__host__ __device__ Vector2 operator*(const float a) const { return Vector2(this->x * a, this->y * a); }
-	__host__ __device__ Vector2 operator/(const float a) const { return Vector2(this->x / a, this->y / a); }
-	__host__ __device__ void operator+=(const Vector2 &v2) { *this = *this + v2; }
-	__host__ __device__ void operator-=(const Vector2 &v2) { *this = *this - v2; }
-	__host__ __device__ void operator*=(const float a) { *this = *this * a; }
-	__host__ __device__ void operator/=(const float a) { *this = *this / a; }
+	Vector2 operator+(const Vector2 &v2) const { return Vector2(this->x + v2.x, this->y + v2.y); }
+	Vector2 operator-(const Vector2 &v2) const { return Vector2(this->x - v2.x, this->y - v2.y); }
+	Vector2 operator*(const float a) const { return Vector2(this->x * a, this->y * a); }
+	Vector2 operator/(const float a) const { return Vector2(this->x / a, this->y / a); }
+	void operator+=(const Vector2 &v2) { *this = *this + v2; }
+	void operator-=(const Vector2 &v2) { *this = *this - v2; }
+	void operator*=(const float a) { *this = *this * a; }
+	void operator/=(const float a) { *this = *this / a; }
 
 	// Members
 	float x, y;
 };
 
 // Left hand operators
-__host__ __device__ inline Vector2 operator*(float a, const Vector2 &v2) { return v2 * a; }
+inline Vector2 operator*(float a, const Vector2 &v2) { return v2 * a; }
 inline std::ostream& operator<<(std::ostream& os, const Vector2 &v2)
 {
 	os << "(" << v2.x << ", " << v2.y << ")";
@@ -46,12 +46,6 @@ struct Vector3
 	// Static Methods
 	__host__ __device__ static float Distance(const Vector3 &v3a, const Vector3 &v3b) { return (v3a - v3b).Magnitude(); }
 	__host__ __device__ static float Dot(const Vector3 &v3a, const Vector3 &v3b) { return v3a.x * v3b.x + v3a.y * v3b.y + v3a.z * v3b.z; }
-	__host__ __device__ static Vector3 Cross(const Vector3 &v3a, const Vector3 &v3b)
-	{
-		return Vector3(v3a.y * v3b.z - v3a.z * v3b.y,
-			v3a.z * v3b.x - v3a.x * v3b.z,
-			v3a.x * v3b.y - v3a.y * v3b.x);
-	}
 	__host__ __device__ static Vector3 Normalized(const Vector3 &v3) { Vector3 normalizedVec = v3; normalizedVec.Normalize(); return normalizedVec; }
 
 	// Right hand operators
@@ -79,9 +73,9 @@ inline std::ostream& operator<<(std::ostream& os, const Vector3 &v3)
 struct Vector4
 {
 	// Constructors
-	__host__ __device__ Vector4() : x(0.f), y(0.f), z(0.f), w(0.f) {}
-	__host__ __device__ Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-	__host__ __device__ Vector4(Vector3 v3, float w)
+	Vector4() : x(0.f), y(0.f), z(0.f), w(0.f) {}
+	Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+	Vector4(Vector3 v3, float w)
 	{ 
 		this->x = v3.x;
 		this->y = v3.y;
@@ -89,42 +83,39 @@ struct Vector4
 		this->w = w;
 	}
 
-	// Static Functions
-	__host__ __device__ static float Dot(const Vector4 &v4a, const Vector4 &v4b) { return v4a.x * v4b.x + v4a.y * v4b.y + v4a.z * v4b.z + v4a.w * v4b.w; }
-
 	// Right hand operators
-	__host__ __device__ Vector4 operator+(const Vector4 &v4) const
+	Vector4 operator+(const Vector4 &v4) const
 	{
 		return Vector4(this->x + v4.x,
 			this->y + v4.y,
 			this->z + v4.z,
 			this->w + v4.w);
 	}
-	__host__ __device__ Vector4 operator-(const Vector4 &v4) const
+	Vector4 operator-(const Vector4 &v4) const
 	{
 		return Vector4(this->x - v4.x,
 			this->y - v4.y,
 			this->z - v4.z,
 			this->w - v4.w);
 	}
-	__host__ __device__ Vector4 operator*(const float a) const
+	Vector4 operator*(const float a) const
 	{
 		return Vector4(this->x * a,
 			this->y * a,
 			this->z * a,
 			this->w * a);
 	}
-	__host__ __device__ Vector4 operator/(const float a) const
+	Vector4 operator/(const float a) const
 	{
 		return Vector4(this->x / a,
 			this->y / a,
 			this->z / a,
 			this->w / a);
 	}
-	__host__ __device__ void operator+=(const Vector4 &v4) { *this = *this + v4; }
-	__host__ __device__ void operator-=(const Vector4 &v4) { *this = *this - v4; }
-	__host__ __device__ void operator*=(const float a) { *this = *this * a; }
-	__host__ __device__ void operator/=(const float a) { *this = *this / a; }
+	void operator+=(const Vector4 &v4) { *this = *this + v4; }
+	void operator-=(const Vector4 &v4) { *this = *this - v4; }
+	void operator*=(const float a) { *this = *this * a; }
+	void operator/=(const float a) { *this = *this / a; }
 
 	// Members
 	float x, y, z, w;

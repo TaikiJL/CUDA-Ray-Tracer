@@ -13,26 +13,24 @@
   <ItemGroup>
     <ClCompile Include="Source\Bitmap.cpp" />
     <ClCompile Include="source\Camera.cpp" />
-    <ClCompile Include="source\ConfigReader.cpp" />
-    <ClCompile Include="source\Geometry.cpp" />
     <ClCompile Include="source\Light.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="source\OBJLoader.cpp" />
+    <ClCompile Include="source\Matrix.cpp" />
     <ClCompile Include="source\Scene.cpp" />
+    <ClCompile Include="source\Sphere.cpp" />
+    <ClCompile Include="source\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
-    <ClInclude Include="source\ConfigReader.h" />
     <ClInclude Include="Source\Geometry.h" />
     <ClInclude Include="Source\Bitmap.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="source\Material.h" />
     <ClInclude Include="source\Matrix.h" />
-    <ClInclude Include="source\Mesh.h" />
     <ClInclude Include="source\MyMath.h" />
-    <ClInclude Include="source\OBJLoader.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="source\Sphere.h" />
     <ClInclude Include="Source\Transform.h" />
     <ClInclude Include="Source\Vector.h" />
   </ItemGroup>

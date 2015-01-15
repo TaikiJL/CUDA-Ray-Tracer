@@ -1,19 +1,14 @@
-#define NOMINMAX
-
 #include <iostream>
 #include <Windows.h>
 #include "GL/freeglut.h"
-#include <string>
 
 #include "Scene.h"
 #include "Bitmap.h"
 #include "Camera.h"
+#include "Sphere.h"
 #include "Light.h"
 #include "MyMath.h"
 #include "Vector.h"
-#include "OBJLoader.h"
-#include "Mesh.h"
-#include "ConfigReader.h"
 
 extern "C" void Render(Color *pixelArray, const Camera &camera);
 
@@ -26,8 +21,8 @@ void KeyboardSpecialFunction(int key, int x, int y);
 void Cleanup(int errorCode, bool bExit = true);
 void LoadRenderTexture();
 
-static int defaultDisplayWidth;
-static int defaultDisplayHeight;
+const static int defaultDisplayWidth = 1280;
+const static int defaultDisplayHeight = 720;
 
 static int glWindowWidth, glWindowHeight;
 static int windowHandle = 0;
@@ -38,36 +33,41 @@ static Color* pixelArray;
 
 int main(int argc, char *argv[])
 {
-	std::cout << "Please enter the path to your configuration file:" << std::endl;
-	std::string userPath;
-
-	std::getline(std::cin, userPath);
-
-	if (userPath.empty())
-		userPath = "scene.conf";
-
-	ConfigReader configReader((char*)userPath.c_str());
-	configReader.readConfig(&Scene::GetLights(), &Scene::GetCameras(), &Scene::GetGeometries());
-
-	// This is used to avoid errors when looking for &Scene::GetLights()[0] in Renderer.cu (to do the same for Geometries)
-	if (Scene::GetLights().size() == 0)
-	{
-		Light emptyLight;
-		emptyLight.SetIntensity(0.f);
-		Scene::GetLights().push_back(emptyLight);
-	}
-
-	Scene::SetMainCamera(Scene::GetCameras()[0]); // Hard-coding: main camera is the first camera of the vector
-
 	int width = Scene::GetRenderWidth();
 	int height = Scene::GetRenderHeight();
-	
-	defaultDisplayWidth = width;
-	defaultDisplayHeight = height;
 
-	int totalPixelCount = width * height;
+	Bitmap img(width, height);
 	
+	int totalPixelCount = width*height;
+
 	pixelArray = new Color[totalPixelCount];
+
+	Camera cam = Camera();
+	//cam.SetBackgroundColor(Color((byte)49, 77, 121));
+	cam.SetBackgroundColor(Color(0.f));
+	Scene::SetMainCamera(cam);
+
+	Sphere sphere = Sphere();
+	sphere.SetPosition(Vector3(0.f, 0.f, 20.f));
+	sphere.SetMaterialBaseColor(Color(0.8f));
+	sphere.SetMaterialShininess(0.8f);
+	Scene::AddGeometry(sphere);
+
+	Sphere sphere3 = Sphere();
+	sphere3.SetPosition(Vector3(-3.f, 0.f, 20.f));
+	sphere3.SetMaterialBaseColor(Color(1.f, 0.f, 0.f));
+	sphere3.SetMaterialShininess(0.3f);
+	Scene::AddGeometry(sphere3);
+
+	Sphere sphere2 = Sphere();
+	sphere2.SetPosition(Vector3(3.f, 0.f, 20.f));
+	sphere2.SetMaterialBaseColor(Color(0.f, 0.f, 1.f));
+	sphere2.SetMaterialShininess(0.3f);
+	Scene::AddGeometry(sphere2);
+
+	Light light = Light();
+	light.SetPosition(Vector3(0.f, 15.f, 10.f));
+	Scene::AddLight(light);
 
 	Initialize(argc, argv);
 	InitWindow(defaultDisplayWidth, defaultDisplayHeight);
@@ -168,59 +168,28 @@ void RenderFunction(void)
 
 void KeyboardSpecialFunction(int key, int x, int y)
 {
-	int mod = glutGetModifiers();
-	
-	if (mod != 4)
+	switch (key)
 	{
-		switch (key)
-		{
-		case GLUT_KEY_LEFT:
-			Scene::GetMainCamera().Translate(Vector3(-1.f, 0.f, 0.f));
-			break;
-		case GLUT_KEY_RIGHT:
-			Scene::GetMainCamera().Translate(Vector3(1.f, 0.f, 0.f));
-			break;
-		case GLUT_KEY_UP:
-			Scene::GetMainCamera().Translate(Vector3(0.f, 0.f, 1.f));
-			break;
-		case GLUT_KEY_DOWN:
-			Scene::GetMainCamera().Translate(Vector3(0.f, 0.f, -1.f));
-			break;
-		default:
-			break;
-		}
+	case GLUT_KEY_LEFT:
+		Scene::GetGeometries()[0].Translate(Vector3(-0.1f, 0.f, 0.f));
+		break;
+	case GLUT_KEY_RIGHT:
+		Scene::GetGeometries()[0].Translate(Vector3(0.1f, 0.f, 0.f));
+		break;
+	case GLUT_KEY_UP:
+		Scene::GetLights()[0].Translate(Vector3(0.f, 1.f, 0.f));
+		break;
+	case GLUT_KEY_DOWN:
+		Scene::GetLights()[0].Translate(Vector3(0.f, -1.f, 0.f));
+		break;
+	default:
+		break;
 	}
-	else
-	{
-		switch (key)
-		{
-		case GLUT_KEY_LEFT:
-			Scene::GetMainCamera().SetRotation(Scene::GetMainCamera().GetRotation() + Vector3(0.f, -1.f, 0.f));
-			break;
-		case GLUT_KEY_RIGHT:
-			Scene::GetMainCamera().SetRotation(Scene::GetMainCamera().GetRotation() + Vector3(0.f, 1.f, 0.f));
-			break;
-		case GLUT_KEY_UP:
-			Scene::GetMainCamera().SetRotation(Scene::GetMainCamera().GetRotation() + Vector3(1.f, 0.f, 0.f));
-			break;
-		case GLUT_KEY_DOWN:
-			Scene::GetMainCamera().SetRotation(Scene::GetMainCamera().GetRotation() + Vector3(-1.f, 0.f, 0.f));
-			break;
-		default:
-			break;
-		}
-	}
-	
 }
 
 void Cleanup(int errorCode, bool bExit)
 {
 	delete[] pixelArray;
-
-	for (int i = 0; i < Scene::GetGeometries().size(); i++)
-	{
-		Scene::GetGeometries()[i].GetMesh().ClearMesh();
-	}
 
 	if (windowHandle != 0)
 	{
