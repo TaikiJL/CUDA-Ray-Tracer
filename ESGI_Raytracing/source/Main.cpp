@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <Windows.h>
-#include "GL/freeglut.h"
+#include <GL/freeglut.h>
 #include <string>
 
 #include "Scene.h"
@@ -14,6 +14,7 @@
 #include "OBJLoader.h"
 #include "Mesh.h"
 #include "ConfigReader.h"
+#include "PathUtils.h"
 
 extern "C" void Render(Color *pixelArray, const Camera &camera);
 
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 
 	if (userPath.empty())
 		userPath = "scene.conf";
+
+	userPath = PathUtils::MakeAbsolutePath(userPath);
+	//std::cout << userPath << std::endl;
 
 	ConfigReader configReader((char*)userPath.c_str());
 	configReader.readConfig(&Scene::GetLights(), &Scene::GetCameras(), &Scene::GetGeometries());

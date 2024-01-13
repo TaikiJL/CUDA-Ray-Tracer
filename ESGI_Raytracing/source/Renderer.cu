@@ -275,12 +275,12 @@ void Render(Color *pixelArray, const Camera &camera)
 		imageRectHalfWidth = zoomY * tanf(camera.GetHorizontalHalfFOV());
 		Vector3 imageRectBottomLeft = Vector3(-imageRectHalfWidth, -1.f, zoomY);
 
-		RayTracing << < numberOfBlocks, MAX_THREADS_PER_BLOCK >> >(d_pixelArray, MAX_THREADS_PER_BLOCK, imageRectBottomLeft, camera, ambientColor, d_geometries, d_lights);
+		RayTracing<<<numberOfBlocks, MAX_THREADS_PER_BLOCK>>>(d_pixelArray, MAX_THREADS_PER_BLOCK, imageRectBottomLeft, camera, ambientColor, d_geometries, d_lights);
 	}
 	else if (camera.GetCameraType() == ORTHOGRAPHIC)
 	{
 		Vector3 imageRectBottomLeft = Vector3((-(float)width * camera.GetSize()) / ((float)height * 2.f), -camera.GetSize() / 2.f, 0.f);
-		RayTracingIsometric << < numberOfBlocks, MAX_THREADS_PER_BLOCK >> >(d_pixelArray, MAX_THREADS_PER_BLOCK, imageRectBottomLeft, camera, ambientColor, d_geometries, d_lights);
+		RayTracingIsometric<<<numberOfBlocks, MAX_THREADS_PER_BLOCK>>>(d_pixelArray, MAX_THREADS_PER_BLOCK, imageRectBottomLeft, camera, ambientColor, d_geometries, d_lights);
 	}
 	
 	cudaError_t error = cudaDeviceSynchronize();

@@ -16,6 +16,7 @@
 #include "Scene.h"
 #include "OBJLoader.h"
 #include "Bitmap.h"
+#include "PathUtils.h"
 
 static const char DELIMITING_CHARACTER = ' ';
 
@@ -327,6 +328,7 @@ void ConfigReader::processBlocks(std::vector<Block>* blocks, std::vector<Light>*
 				objects->back().CreatePlaneMesh(primitiveInfo.floatParameters[0], primitiveInfo.floatParameters[1]);
 				break;
 			case _OBJ:
+				objPath = PathUtils::MakeAbsolutePath(objPath);
 				OBJLoader::LoadOBJ((char*)objPath.c_str(), objects->back().GetMesh());
 				break;
 			default:
